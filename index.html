@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Portal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <h1>Acesso ao Portal</h1>
+</header>
+
+<main>
+  <div id="loginContainer">
+    <input type="text" id="username" placeholder="Usuário" required>
+    <input type="password" id="password" placeholder="Senha" required>
+    <button onclick="login()">Acessar</button>
+    <p id="result"></p>
+  </div>
+
+  <div id="dashboard"></div>
+</main>
+
+<script>
+async function login() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const result = document.getElementById('result');
+
+  const res = await fetch('http://localhost:3000/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ username, password })
+  });
+
+  const data = await res.json();
+
+  if (res.status !== 200) {
+    result.className = 'error';
+    result.innerText = data.error;
+  } else {
+    document.getElementById('loginContainer').style.display = 'none';
+
+    document.getElementById('dashboard').innerHTML = `
+      <div>
+        <h2>Login bem-sucedido</h2>
+        <p>Bem-vindo, ${data.username}!</p>
+      </div>
+    `;
+  }
+}
+</script>
+
+</body>
+</html>
